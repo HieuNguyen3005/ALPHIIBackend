@@ -1,0 +1,12 @@
+2024-06-08 09:45:45.901 +07:00 [ERR] Failed executing DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Tasks] (
+    [Id] uniqueidentifier NOT NULL,
+    [TaskName] nvarchar(max) NOT NULL,
+    [State] int NOT NULL,
+    [Note] nvarchar(max) NOT NULL,
+    [UserId] uniqueidentifier NOT NULL,
+    [ToolId] uniqueidentifier NOT NULL,
+    CONSTRAINT [PK_Tasks] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Tasks_Tools_ToolId] FOREIGN KEY ([ToolId]) REFERENCES [Tools] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_Tasks_User_UserId] FOREIGN KEY ([UserId]) REFERENCES [User] ([Id]) ON DELETE CASCADE
+);

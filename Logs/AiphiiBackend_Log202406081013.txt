@@ -1,0 +1,2 @@
+2024-06-08 10:13:18.261 +07:00 [ERR] Failed executing DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [VMTask] DROP CONSTRAINT [FK_VMTask_Images_ImageInputId];

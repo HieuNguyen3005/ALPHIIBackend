@@ -1,0 +1,8 @@
+2024-05-11 19:33:47.241 +07:00 [ERR] Failed executing DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Regions] (
+    [Id] uniqueidentifier NOT NULL,
+    [Code] nvarchar(max) NOT NULL,
+    [Name] nvarchar(max) NOT NULL,
+    [RegionImageUrl] nvarchar(max) NULL,
+    CONSTRAINT [PK_Regions] PRIMARY KEY ([Id])
+);

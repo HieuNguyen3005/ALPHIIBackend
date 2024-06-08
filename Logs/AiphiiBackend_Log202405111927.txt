@@ -1,0 +1,6 @@
+2024-05-11 19:27:34.948 +07:00 [ERR] Failed executing DbCommand (35ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Difficulties] (
+    [Id] uniqueidentifier NOT NULL,
+    [Name] nvarchar(max) NOT NULL,
+    CONSTRAINT [PK_Difficulties] PRIMARY KEY ([Id])
+);

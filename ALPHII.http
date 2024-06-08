@@ -1,0 +1,6 @@
+@ALPHII_HostAddress = http://localhost:5195
+
+GET {{ALPHII_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,14 @@
+2024-06-08 10:09:49.289 +07:00 [ERR] Failed executing DbCommand (9ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [VMTask] (
+    [Id] uniqueidentifier NOT NULL,
+    [ImageInputId] uniqueidentifier NOT NULL,
+    [ImageMaskId] uniqueidentifier NOT NULL,
+    [PositivePrompt] nvarchar(max) NOT NULL,
+    [NegativePrompt] nvarchar(max) NOT NULL,
+    [TextDescription] nvarchar(max) NOT NULL,
+    [TaskId] uniqueidentifier NOT NULL,
+    CONSTRAINT [PK_VMTask] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_VMTask_Images_ImageInputId] FOREIGN KEY ([ImageInputId]) REFERENCES [Images] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_VMTask_Images_ImageMaskId] FOREIGN KEY ([ImageMaskId]) REFERENCES [Images] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_VMTask_Tasks_TaskId] FOREIGN KEY ([TaskId]) REFERENCES [Tasks] ([Id]) ON DELETE NO ACTION
+);
