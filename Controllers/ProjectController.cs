@@ -9,11 +9,12 @@ namespace ALPHII.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TaskController : ControllerBase
+    public class ProjectController : ControllerBase
     {
         [HttpGet]
         public async Task<IActionResult> GetAllTaskByToolId()
         {
+
             return Ok();
         }
 
@@ -29,6 +30,10 @@ namespace ALPHII.Controllers
             return Ok();
         }
 
-        public
+        [HttpDelete] 
+        public async Task<IActionResult> DeleteTask() 
+        {
+            return Ok();
+        }
     }
 }

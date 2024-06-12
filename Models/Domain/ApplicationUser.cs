@@ -6,6 +6,6 @@ namespace ALPHII.Models.Domain
     {
         public string FirstName { get; set; } 
         public string LastName { get; set; }
-        public int credit { get; set; }
+        public int Credit { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 ﻿
 namespace ALPHII.Models.Domain
 {
-    public class VMTask
+    public class VMProject
     {
 
         public Guid Id { get; set; }
@@ -17,8 +17,8 @@ namespace ALPHII.Models.Domain
         public string TextDescription { get; set; }
 
         // Foreign key and nevigation property
-        public Guid TaskId { get; set; }
+        public Guid ProjectId { get; set; }
 
-        public Task Task { get; set; }  
+        public Project Project { get; set; }  
     }
 }

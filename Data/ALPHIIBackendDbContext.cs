@@ -37,7 +37,7 @@ namespace ALPHII.Data
 
         public DbSet<Tool> Tools { get; set; }
 
-        public DbSet<Task> Tasks { get; set; }
+        public DbSet<Project> Projects { get; set; }
 
         public DbSet<User> Users { get; set; }
 
@@ -106,30 +106,30 @@ namespace ALPHII.Data
                 .HasForeignKey(p => p.PlanId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // 1 - n: User - Task
-            modelBuider.Entity<Task>()
+            // 1 - n: User - Project
+            modelBuider.Entity<Project>()
                 .HasOne(p => p.User)
-                .WithMany(c => c.Tasks)
+                .WithMany(c => c.Projects)
                 .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
 
 
-            // 1 - n: Tool - Task
-            modelBuider.Entity<Task>()
+            // 1 - n: Tool - Project
+            modelBuider.Entity<Project>()
                 .HasOne(p => p.Tool)
-                .WithMany(c => c.Tasks)
+                .WithMany(c => c.Projects)
                 .HasForeignKey(p => p.ToolId)
                 .OnDelete(DeleteBehavior.Restrict);
 
 
 
             // Configuring one-to-one relationship using Fluent API 
-            // 1 - 1: Task - VMTask
-            modelBuider.Entity<Task>()
-                .HasOne(p => p.VMTask)
-                .WithOne(c => c.Task)
-                .HasForeignKey<VMTask>(c => c.TaskId)
+            // 1 - 1: Project - VMProject
+            modelBuider.Entity<Project>()
+                .HasOne(p => p.VMProject)
+                .WithOne(c => c.Project)
+                .HasForeignKey<VMProject>(c => c.ProjectId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
 

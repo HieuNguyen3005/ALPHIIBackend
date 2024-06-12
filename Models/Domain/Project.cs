@@ -1,9 +1,9 @@
 ﻿namespace ALPHII.Models.Domain
 {
-    public class Task
+    public class Project
     {
         public Guid Id { get; set; }
-        public string TaskName { get; set; }
+        public string ProjectName { get; set; }
 
         // State: 0 - Not Started; 1 - In processing; 2 - completed
         public int State { get; set; }
@@ -24,6 +24,6 @@
 
         // Nevigation property ( 1 - 1 : Task - VMTask)
 
-        public VMTask VMTask { get; set; }
+        public VMProject VMProject { get; set; }
     }
 }
