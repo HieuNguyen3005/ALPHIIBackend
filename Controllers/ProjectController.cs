@@ -11,29 +11,61 @@ namespace ALPHII.Controllers
     [ApiController]
     public class ProjectController : ControllerBase
     {
+        private readonly IProjectRepository projectRepository;
+        private readonly IMapper mapper;
+
+        public ProjectController(IProjectRepository projectRepository, IMapper mapper)
+        {
+            this.projectRepository = projectRepository;
+            this.mapper = mapper;
+        }
         [HttpGet]
-        public async Task<IActionResult> GetAllTaskByToolId()
+        public async Task<IActionResult> GetAllProjectByToolIdAndUserId([FromBody] GetAllProjectRequest getProjectRequest)
         {
+            var projectDomainModels = await projectRepository.GetAllProjectByToolIdAndUserIdAsync(getProjectRequest.ToolId, getProjectRequest.UserId);
+            return Ok(mapper.Map<List<ProjectDto>>(projectDomainModels));
+        }
 
-            return Ok();
+        [HttpGet]
+        public async Task<IActionResult> GetVMProjectByToolIdAndUserIdAndProjectId([FromBody] GetVmProjectRequest getVmProjectRequest)
+        {
+            var projectDomain = await projectRepository.GetVMProjectByToolIdAndUserIdAndProjectIdAsync(getVmProjectRequest.ToolId, getVmProjectRequest.UserId, getVmProjectRequest.ProjectId);
+            return Ok(mapper.Map<List<ProjectDto>>(projectDomain));
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTask()
+        public async Task<IActionResult> CreateProject(CreateProjectRequest createProjectRequest)
         {
-            return Ok();
+            var projectDomain = await projectRepository.CreateProjectAsync(createProjectRequest.ToolId, createProjectRequest.UserId);
+            return Ok(mapper.Map<ProjectDto>(projectDomain));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UpdateTask()
+        [HttpPut]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> UpdateVmProject([FromRoute] Guid id, [FromBody] UpdateVmProjectRequestDto updateVmProjectRequestDto)
         {
-            return Ok();
+            var projectDomainModel = mapper.Map<Project>(updateVmProjectRequestDto);
+
+            projectDomainModel = await projectRepository.UpdateVmProjectAsync(id, projectDomainModel);
+
+            if (projectDomainModel == null)
+            {
+                return NotFound();
+            }
+            return Ok(mapper.Map<ProjectDto>(projectDomainModel));
         }
 
-        [HttpDelete] 
-        public async Task<IActionResult> DeleteTask() 
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> DeleteProject([FromRoute] Guid id) 
         {
-            return Ok();
+            var projectDomainModel = await projectRepository.DeleteProjectAsync(id);
+
+            if (projectDomainModel == null)
+            {
+                return NotFound();
+            }
+            return Ok(mapper.Map<ProjectDto>(projectDomainModel));
         }
     }
 }

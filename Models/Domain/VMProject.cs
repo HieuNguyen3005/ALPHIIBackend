@@ -20,5 +20,7 @@ namespace ALPHII.Models.Domain
         public Guid ProjectId { get; set; }
 
         public Project Project { get; set; }  
+
+        public Guid[]  ResultImage {  get; set; }
     }
 }

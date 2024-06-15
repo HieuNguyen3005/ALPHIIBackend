@@ -4,16 +4,14 @@ namespace ALPHII.Repositories
 {
     public interface IProjectRepository
     {
-        Task<List<Project>> GetAllProjectByToolIdAsync();
+        Task<List<Project>> GetAllProjectByToolIdAndUserIdAsync(Guid ToolId, Guid UserId);
 
-        Task<Project> GetVmProjectByIdAsync(strong VmProjectId);
+        Task<Project> GetVMProjectByToolIdAndUserIdAndProjectIdAsync(Guid ToolId, Guid UserId, Guid ProjectId);
 
-        Task<Project> CreateProjectAsync();
+        Task<Project> CreateProjectAsync(Guid ToolId, Guid UserId);
 
-        Task<Project> UpdateProjectAsync();
+        Task<Project> UpdateVmProjectAsync(Guid ProjectId, Project project);
 
-        Task<Project> DeleteProjectAsync();
-
-        
+        Task<Project> DeleteProjectAsync(Guid ProjectId);
     }
 }
