@@ -19,11 +19,20 @@ namespace ALPHII.Mappings
             CreateMap<Walk, WalkDto>().ReverseMap();
             CreateMap<AddWalkRequestDto, Walk>().ReverseMap();
             CreateMap<UpdateWalkRequestDto, Walk>().ReverseMap();
+
             CreateMap<DifficultyDto, Difficulty>().ReverseMap();
+
             CreateMap<ProjectDto, Project>().ReverseMap();
             CreateMap<VmProjectDto, VMProject>().ReverseMap();
             CreateMap<UpdateVmProjectRequestDto, Project>().ReverseMap();
+            CreateMap<UpdateVmProjectRequestDto,Project>().ReverseMap();
 
+            CreateMap<UpdateToolRequestDto, Tool>().ReverseMap();
+            CreateMap<ToolDto, Tool>. ReverseMap();
+            CreateMap<AddToolRequestDto, Tool>.ReverseMap();
+            CreateMap<UpdateToolRequestDto,Tool>.ReverseMap();
+
+            CreateMap<PlanDto, Plan>.ReverseMap();
 
         }
     }

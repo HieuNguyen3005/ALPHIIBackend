@@ -92,6 +92,11 @@ builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
 builder.Services.AddScoped<IWalkRepository, SQLWalkRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IImageRepository, LocalImageRepository>();
+builder.Service.AddScoped<IProjectRepository, LocalProjectRepository>();
+builder.Server.AddScoped<IToolRepository, SQLToolRepository>();
+builder.Server.AddScoped<IPlanRepository, SQLPlanRepository>();
+builder.Server.AddScoped<IAIRepository, LocalAIRepository>();
+
 
 builder.Services.AddIdentityCore<ApplicationUser>()
     .AddRoles<IdentityRole>()

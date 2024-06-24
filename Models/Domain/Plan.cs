@@ -10,6 +10,8 @@
 
         public int CostPerMonth { get; set; }
 
+        public int CreditResetNumber {get; set;}
+
         public ICollection<User> Users { get; set; }
     }
 }
