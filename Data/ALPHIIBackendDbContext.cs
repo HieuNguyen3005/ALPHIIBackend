@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
-using Task = ALPHII.Models.Domain.Task;
 
 namespace ALPHII.Data
 {
@@ -40,6 +39,7 @@ namespace ALPHII.Data
         public DbSet<Project> Projects { get; set; }
 
         public DbSet<User> Users { get; set; }
+
 
         
 

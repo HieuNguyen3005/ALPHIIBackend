@@ -6,7 +6,7 @@
 
         public string ToolName { get; set; }
 
-        public Plan BasePlan { get; set; }
+        public Guid BasePlanId { get; set; }
 
         public int Price { get; set; }
 

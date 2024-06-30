@@ -1,4 +1,5 @@
-﻿using ALPHII.Models.Domain;
+﻿using ALPHII.CustomActionFilters;
+using ALPHII.Models.Domain;
 using ALPHII.Models.DTO;
 using ALPHII.Repositories;
 using AutoMapper;
@@ -13,7 +14,7 @@ namespace ALPHII.Controllers
     {
         private readonly IToolRepository ToolRepository;
         private readonly IMapper mapper;
-        public ToolsController(IToolRepository ToolRepository, IMapper mapper)
+        public ToolController(IToolRepository ToolRepository, IMapper mapper)
         {
             this.ToolRepository = ToolRepository;
             this.mapper = mapper;
@@ -52,7 +53,7 @@ namespace ALPHII.Controllers
         [ValidateModel]
         public async Task<IActionResult> UpdateById([FromRoute] Guid id, [FromBody]  UpdateToolRequestDto updateToolRequestDto)
         {
-            ToolDomainModel = await ToolRepository.UpdateToolAsync(id, updateToolRequestDto);
+            var ToolDomainModel = await ToolRepository.UpdateToolAsync(id, updateToolRequestDto);
             if(ToolDomainModel == null)
             {
                 return NotFound();

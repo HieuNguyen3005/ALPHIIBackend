@@ -31,7 +31,7 @@ namespace ALPHII.Repositories
             return existionPlan;
         }
 
-        public async Task<List<Plan>> GetAllPlanAsync(int pageNumber, int pageSize,string? filterOn, string? filterQuery, string? sortBy, bool isAscending = true)
+        public async Task<List<Plan>> GetAllPlanAsync()
         {
             return await dbContext.Plans.ToListAsync();
         }

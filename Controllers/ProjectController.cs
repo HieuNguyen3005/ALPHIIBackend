@@ -20,6 +20,7 @@ namespace ALPHII.Controllers
             this.mapper = mapper;
         }
         [HttpGet]
+        [Route("GetAllProject")]
         public async Task<IActionResult> GetAllProjectByToolIdAndUserId([FromBody] GetAllProjectRequest getProjectRequest)
         {
             var projectDomainModels = await projectRepository.GetAllProjectByToolIdAndUserIdAsync(getProjectRequest.ToolId, getProjectRequest.UserId);
@@ -27,6 +28,7 @@ namespace ALPHII.Controllers
         }
 
         [HttpGet]
+        [Route("GetVMProject")]
         public async Task<IActionResult> GetVMProjectByToolIdAndUserIdAndProjectId([FromBody] GetVmProjectRequest getVmProjectRequest)
         {
             var projectDomain = await projectRepository.GetVMProjectByToolIdAndUserIdAndProjectIdAsync(getVmProjectRequest.ToolId, getVmProjectRequest.UserId, getVmProjectRequest.ProjectId);

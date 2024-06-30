@@ -28,11 +28,13 @@ namespace ALPHII.Mappings
             CreateMap<UpdateVmProjectRequestDto,Project>().ReverseMap();
 
             CreateMap<UpdateToolRequestDto, Tool>().ReverseMap();
-            CreateMap<ToolDto, Tool>. ReverseMap();
-            CreateMap<AddToolRequestDto, Tool>.ReverseMap();
-            CreateMap<UpdateToolRequestDto,Tool>.ReverseMap();
 
-            CreateMap<PlanDto, Plan>.ReverseMap();
+            CreateMap<ToolDto, Tool>().ReverseMap();
+
+            CreateMap<AddToolRequestDto, Tool>().ReverseMap();
+
+            CreateMap<UpdateToolRequestDto, Tool>().ReverseMap();
+            CreateMap<PlanDto, Plan>().ReverseMap();
 
         }
     }

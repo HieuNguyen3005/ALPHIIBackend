@@ -1,4 +1,5 @@
-﻿using ALPHII.Models.Domain;
+﻿using ALPHII.CustomActionFilters;
+using ALPHII.Models.Domain;
 using ALPHII.Models.DTO;
 using ALPHII.Repositories;
 using AutoMapper;
@@ -13,7 +14,7 @@ namespace ALPHII.Controllers
     {
         private readonly IPlanRepository PlanRepository;
         private readonly IMapper mapper;
-        public PlansController(IPlanRepository PlanRepository, IMapper mapper)
+        public PlanController(IPlanRepository PlanRepository, IMapper mapper)
         {
             this.PlanRepository = PlanRepository;
             this.mapper = mapper;
@@ -54,12 +55,12 @@ namespace ALPHII.Controllers
         {
             var planDomainModel = mapper.Map<Plan>(updatePlanRequestDto);
 
-            PlanDomainModel = await PlanRepository.UpdatePlanAsync(id, planDomainModel);
-            if(PlanDomainModel == null)
+            planDomainModel = await PlanRepository.UpdatePlanAsync(id, planDomainModel);
+            if(planDomainModel == null)
             {
                 return NotFound();
             }    
-            return Ok(mapper.Map<PlanDto>(PlanDomainModel));   
+            return Ok(mapper.Map<PlanDto>(planDomainModel));   
         }
 
         [HttpDelete]

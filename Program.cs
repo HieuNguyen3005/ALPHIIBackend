@@ -92,10 +92,10 @@ builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
 builder.Services.AddScoped<IWalkRepository, SQLWalkRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IImageRepository, LocalImageRepository>();
-builder.Service.AddScoped<IProjectRepository, LocalProjectRepository>();
-builder.Server.AddScoped<IToolRepository, SQLToolRepository>();
-builder.Server.AddScoped<IPlanRepository, SQLPlanRepository>();
-builder.Server.AddScoped<IAIRepository, LocalAIRepository>();
+builder.Services.AddScoped<IProjectRepository, LocalProjectRepository>();
+builder.Services.AddScoped<IToolRepository, SQLToolRepository>();
+builder.Services.AddScoped<IPlanRepository, SQLPlanRepository>();
+builder.Services.AddScoped<IAIRepository, LocalAIRepository>();
 
 
 builder.Services.AddIdentityCore<ApplicationUser>()
@@ -143,8 +143,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 //app.UseMiddleware<ExceptionHandlerMiddleware>();
-app.UseAuthentication();
-app.UseAuthorization();
+//app.UseAuthentication();
+//app.UseAuthorization();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Images")),

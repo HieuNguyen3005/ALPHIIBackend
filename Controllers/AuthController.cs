@@ -35,7 +35,7 @@ namespace ALPHII.Controllers
                 Email = registerRequestDto.UserName,
                 FirstName = registerRequestDto.FirstName,
                 LastName = registerRequestDto.LastName,
-                credit = registerRequestDto.Credit
+                Credit = registerRequestDto.Credit
             };
 
             var identityResult = await _userManager.CreateAsync(identityUser, registerRequestDto.Password);

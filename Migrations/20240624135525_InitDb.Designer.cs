@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ALPHII.Migrations
 {
     [DbContext(typeof(ALPHIIBackendDbContext))]
-    [Migration("20240608031159_Init DB")]
-    partial class InitDB
+    [Migration("20240624135525_InitDb")]
+    partial class InitDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -84,6 +84,9 @@ namespace ALPHII.Migrations
                     b.Property<int>("CostPerYear")
                         .HasColumnType("int");
 
+                    b.Property<int>("CreditResetNumber")
+                        .HasColumnType("int");
+
                     b.Property<string>("NamePlan")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -91,6 +94,38 @@ namespace ALPHII.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Plans");
+                });
+
+            modelBuilder.Entity("ALPHII.Models.Domain.Project", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProjectName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("ToolId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ToolId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("ALPHII.Models.Domain.Region", b =>
@@ -138,38 +173,6 @@ namespace ALPHII.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ALPHII.Models.Domain.Task", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Note")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("State")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TaskName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("ToolId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ToolId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Tasks");
-                });
-
             modelBuilder.Entity("ALPHII.Models.Domain.Tool", b =>
                 {
                     b.Property<Guid>("Id")
@@ -187,8 +190,6 @@ namespace ALPHII.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BasePlanId");
 
                     b.ToTable("Tools");
                 });
@@ -220,7 +221,7 @@ namespace ALPHII.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("ALPHII.Models.Domain.VMTask", b =>
+            modelBuilder.Entity("ALPHII.Models.Domain.VMProject", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -240,8 +241,12 @@ namespace ALPHII.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("TaskId")
+                    b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ResultImage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TextDescription")
                         .IsRequired()
@@ -249,10 +254,10 @@ namespace ALPHII.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TaskId")
+                    b.HasIndex("ProjectId")
                         .IsUnique();
 
-                    b.ToTable("VMTask");
+                    b.ToTable("VMProject");
                 });
 
             modelBuilder.Entity("ALPHII.Models.Domain.Walk", b =>
@@ -290,16 +295,16 @@ namespace ALPHII.Migrations
                     b.ToTable("Walks");
                 });
 
-            modelBuilder.Entity("ALPHII.Models.Domain.Task", b =>
+            modelBuilder.Entity("ALPHII.Models.Domain.Project", b =>
                 {
                     b.HasOne("ALPHII.Models.Domain.Tool", "Tool")
-                        .WithMany("Tasks")
+                        .WithMany("Projects")
                         .HasForeignKey("ToolId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("ALPHII.Models.Domain.User", "User")
-                        .WithMany("Tasks")
+                        .WithMany("Projects")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -307,17 +312,6 @@ namespace ALPHII.Migrations
                     b.Navigation("Tool");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("ALPHII.Models.Domain.Tool", b =>
-                {
-                    b.HasOne("ALPHII.Models.Domain.Plan", "BasePlan")
-                        .WithMany()
-                        .HasForeignKey("BasePlanId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("BasePlan");
                 });
 
             modelBuilder.Entity("ALPHII.Models.Domain.User", b =>
@@ -331,15 +325,15 @@ namespace ALPHII.Migrations
                     b.Navigation("Plan");
                 });
 
-            modelBuilder.Entity("ALPHII.Models.Domain.VMTask", b =>
+            modelBuilder.Entity("ALPHII.Models.Domain.VMProject", b =>
                 {
-                    b.HasOne("ALPHII.Models.Domain.Task", "Task")
-                        .WithOne("VMTask")
-                        .HasForeignKey("ALPHII.Models.Domain.VMTask", "TaskId")
+                    b.HasOne("ALPHII.Models.Domain.Project", "Project")
+                        .WithOne("VMProject")
+                        .HasForeignKey("ALPHII.Models.Domain.VMProject", "ProjectId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Task");
+                    b.Navigation("Project");
                 });
 
             modelBuilder.Entity("ALPHII.Models.Domain.Walk", b =>
@@ -366,20 +360,20 @@ namespace ALPHII.Migrations
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("ALPHII.Models.Domain.Task", b =>
+            modelBuilder.Entity("ALPHII.Models.Domain.Project", b =>
                 {
-                    b.Navigation("VMTask")
+                    b.Navigation("VMProject")
                         .IsRequired();
                 });
 
             modelBuilder.Entity("ALPHII.Models.Domain.Tool", b =>
                 {
-                    b.Navigation("Tasks");
+                    b.Navigation("Projects");
                 });
 
             modelBuilder.Entity("ALPHII.Models.Domain.User", b =>
                 {
-                    b.Navigation("Tasks");
+                    b.Navigation("Projects");
                 });
 #pragma warning restore 612, 618
         }

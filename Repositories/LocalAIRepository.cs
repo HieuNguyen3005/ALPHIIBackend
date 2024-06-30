@@ -22,7 +22,7 @@ namespace ALPHII.Repositories
         private readonly IHttpClientFactory httpClientFactory;
         private readonly ALPHIIBackendDbContext _dbContext;
         private readonly IImageRepository imageRepository;
-        public AIController(IHttpClientFactory httpClientFactory, ALPHIIBackendDbContext dbContext,IImageRepository imageRepository )
+        public LocalAIRepository(IHttpClientFactory httpClientFactory, ALPHIIBackendDbContext dbContext,IImageRepository imageRepository )
         {
             this.httpClientFactory = httpClientFactory;
             this._dbContext = dbContext;
@@ -39,7 +39,7 @@ namespace ALPHII.Repositories
                    model_type = "hd",
                    n_steps = 20,
                    image_scale = 3,
-                   human_base64 = human_base64,
+                   human_base64 = "",
                    cloth_base64 = cloth_base64,
                    //human_base64 = "",
                    n_samples = 1,
@@ -77,14 +77,14 @@ namespace ALPHII.Repositories
             }
         }
 
-        public async Task<List<GetSegmentResponseDto>> GetSegmentAsync(string base_image_base64)
+        public async Task GetSegmentAsync(string base_image_base64)
         {
             GetSegmentInput getSegmentInput = new GetSegmentInput {
                 base_image = base_image_base64
             };
 
             string jsonBody = JsonConvert.SerializeObject(getSegmentInput);
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://f5e1-34-105-62-129.ngrok-free.app/segment");
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://5cab-34-19-9-91.ngrok-free.app/segment");
             request.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
             using (HttpClient client = new HttpClient())
@@ -94,20 +94,62 @@ namespace ALPHII.Repositories
                // Xử lý kết quả
                if (response.IsSuccessStatusCode)
                {
-                   response.EnsureSuccessStatusCode();
-                   var responseBody = await response.Content.ReadFromJsonAsync<List<GetSegmentResponseDto>();
-                   return responseBody;
-               }
+                    //string responseBody = await response.Content.ReadAsStringAsync();
+                    //var result = JsonConvert.DeserializeObject<List<GetSegmentResponseDto>>(responseBody);
+                    //return null;
+                }
                else
                {
-                   return null;
+                   //return null;
                }
             }
         }
 
         public async Task<VirtualModelResponseDto> VirtualModelAsync(VirtualModelRequestDto virtualModelRequestDto)
         {
-            
+            string base_image_base64 = FunctionCommon.ConvertImageToBase64(virtualModelRequestDto.base_image_url);
+            string mask_image_base64 = FunctionCommon.ConvertImageToBase64(virtualModelRequestDto.mask_image_url);
+            VirtualModelInput virtualModelInput = new VirtualModelInput
+            {
+                img_base64 = base_image_base64,
+                mask_bask64 = mask_image_base64,
+                user_prompt = virtualModelRequestDto.user_prompt,
+                negative_promt = virtualModelRequestDto.negative_prompt,
+                quality = 2,
+                n_sample = 2
+            };
+
+            string jsonBody = JsonConvert.SerializeObject(virtualModelInput);
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://fbc3-34-16-147-21.ngrok-free.app/model_gen/");
+            request.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.SendAsync(request);
+
+                // Xử lý kết quả
+                if (response.IsSuccessStatusCode)
+                {
+                    response.EnsureSuccessStatusCode();
+                    var responseBody = await response.Content.ReadFromJsonAsync<VirtualModelOutput>();
+                    // Save image to database
+
+                    string urlImage = await imageRepository.SaveImage(responseBody.results[0]);
+                    var virtualModelResponseDto = new VirtualModelResponseDto
+                    {
+                        status = "200",
+                        image_result_url = urlImage
+                    };
+
+                    return virtualModelResponseDto;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+
         }
 
 
