@@ -13,9 +13,22 @@ using ALPHII.Middlewares;
 using ALPHII.Data;
 using ALPHII.Repositories;
 using ALPHII.Models.Domain;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+})
+.AddCookie()
+.AddGoogle(GoogleDefaults.AuthenticationScheme, option =>
+{
+    option.ClientId = builder.Configuration.GetSection("GoogleKeys:ClientId").Value;
+    option.ClientSecret = builder.Configuration.GetSection("GoogleKeys:ClientSecret").Value;
+});
 // Add services to the container.
 
 builder.Services.AddHttpClient();
@@ -96,6 +109,7 @@ builder.Services.AddScoped<IProjectRepository, LocalProjectRepository>();
 builder.Services.AddScoped<IToolRepository, SQLToolRepository>();
 builder.Services.AddScoped<IPlanRepository, SQLPlanRepository>();
 builder.Services.AddScoped<IAIRepository, LocalAIRepository>();
+builder.Services.AddScoped<IAuthRepository, LocalAuthRepository>();
 
 
 builder.Services.AddIdentityCore<ApplicationUser>()

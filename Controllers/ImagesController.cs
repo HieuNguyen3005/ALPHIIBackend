@@ -18,7 +18,6 @@ namespace AiphiiAPI.Controllers
 
         [HttpPost]
         [Route("Upload")]
-        [Authorize(Roles = "User")]
         public async Task<IActionResult> UpLoad([FromForm]ImageUploadRequestDto request)
         {
             ValidateFileUpload(request);

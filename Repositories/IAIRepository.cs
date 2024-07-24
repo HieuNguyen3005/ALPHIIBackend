@@ -7,7 +7,7 @@ namespace ALPHII.Repositories
     {
 
         Task<VirtualTryOnResponse> VirtualTryOnAsync(VirtualTryOnRequestDto virtualTryOnRequestDto);
-        Task GetSegmentAsync(string base_image_base64);
+        Task<List<GetSegmentResponseDto>> GetSegmentAsync(string base_image_base64);
 
         Task<VirtualModelResponseDto> VirtualModelAsync(VirtualModelRequestDto virtualModelRequestDto);
 

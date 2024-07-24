@@ -1,9 +1,15 @@
-﻿using ALPHII.Models.Domain;
+﻿using System.Security.Claims;
+using System.Threading.Tasks;
+using ALPHII.Models.Domain;
 using ALPHII.Models.DTO;
 using ALPHII.Repositories;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace ALPHII.Controllers
 {
@@ -11,48 +17,28 @@ namespace ALPHII.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ITokenRepository tokenRepository;
-        public AuthController(UserManager<ApplicationUser> userManager, ITokenRepository tokenRepository)
+        private readonly IAuthRepository authRepository;
+
+        public AuthController(IAuthRepository _authRepository)
         {
-            this._userManager = userManager;
-            this.tokenRepository = tokenRepository;
+            this.authRepository = _authRepository;
         }
+
         //POST: /api/Auth/Register
         [HttpPost]
         [Route("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDto registerRequestDto)
         {
-            //var identityUser = new IdentityUser
-            //{
-            //    UserName = registerRequestDto.UserName,
-            //    Email = registerRequestDto.UserName
-            //};
+            var identityUser = await authRepository.RegisterAsync(registerRequestDto);
 
-            var identityUser = new ApplicationUser
+            if(identityUser != null)
             {
-                UserName = registerRequestDto.UserName,
-                Email = registerRequestDto.UserName,
-                FirstName = registerRequestDto.FirstName,
-                LastName = registerRequestDto.LastName,
-                Credit = registerRequestDto.Credit
-            };
-
-            var identityResult = await _userManager.CreateAsync(identityUser, registerRequestDto.Password);
-
-            // Add roles to this User
-            if(identityResult.Succeeded) {
-
-                if(registerRequestDto.Roles != null && registerRequestDto.Roles.Any())
-                {
-                    identityResult = await _userManager.AddToRoleAsync(identityUser, registerRequestDto.Roles);
-                    if (identityResult.Succeeded)
-                    {
-                        return Ok("User was registered! Please login.");
-                    }
-                }
+                return Ok("User was registered! Please login.");
             }
-            return BadRequest("Something was wrong!");
+            else
+            {
+                return BadRequest("Something was wrong!");
+            }    
         }
 
         //POST: /api/Auth/Login
@@ -60,33 +46,45 @@ namespace ALPHII.Controllers
         [Route("Login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
         {
-            var user = await _userManager.FindByEmailAsync(loginRequestDto.UserName);
+            var loginResponse = await authRepository.LoginAsync(loginRequestDto);
 
-            if (user != null) {
-                var checkPasswordResult = await _userManager.CheckPasswordAsync(user, loginRequestDto.Password);
-
-                if(checkPasswordResult)
-                {
-                    // Get roles for this user
-                    var roles = await _userManager.GetRolesAsync(user);
-
-                    if (roles != null)
-                    {
-                        // Create Token
-                        var jwtToken = tokenRepository.CreateJWTToken(user, roles.ToList());
-
-                        var response = new LoginResponseDto
-                        {
-                            jwtToken = jwtToken
-                        };
-                        return Ok(response);
-                    }
-                    return Ok("Login successfully");
-                }
-            
+            if (loginResponse != null)
+            {
+                return Ok(loginResponse);
             }
+            else
+            {
+                return BadRequest("Username or password incorrect");
+            }
+        }
 
-            return BadRequest("Username or password incorrect");
+        //[HttpPost]
+        //[Route("ChangePassword")]
+        //public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequestDto loginRequestDto)
+
+
+        [HttpGet("loginGoogle")]
+        public async Task LoginAsync()
+        {
+            await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme,
+            new AuthenticationProperties
+            {
+            RedirectUri = "/api/auth/signin-google"
+            });
+        }
+
+        [HttpGet("signin-google")]
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new
+            {
+                claim.Issuer,
+                claim.OriginalIssuer,
+                claim.Type
+            });
+
+            return Ok(JsonConvert.SerializeObject(claims));
         }
     }
 }

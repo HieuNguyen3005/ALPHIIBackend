@@ -1,20 +1,8 @@
 ﻿using ALPHII.Data;
-using ALPHII.Models.Domain;
 using ALPHII.Models.DTO;
-using Microsoft.EntityFrameworkCore;
-using System.Reflection.PortableExecutable;
 using System.Text;
-using System.Text.Json;
-using ALPHII.Models.DTO;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using ALPHII.Common;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
-using ALPHII.Data;
-using ALPHII.Repositories;
 namespace ALPHII.Repositories
 {
     public class LocalAIRepository : IAIRepository
@@ -77,32 +65,30 @@ namespace ALPHII.Repositories
             }
         }
 
-        public async Task GetSegmentAsync(string base_image_base64)
+        public async Task<List<GetSegmentResponseDto>> GetSegmentAsync(string base_image_base64)
         {
+
+            List<GetSegmentResponseDto> result = new();
             GetSegmentInput getSegmentInput = new GetSegmentInput {
                 base_image = base_image_base64
             };
 
             string jsonBody = JsonConvert.SerializeObject(getSegmentInput);
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://5cab-34-19-9-91.ngrok-free.app/segment");
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://d28b-34-87-16-231.ngrok-free.app/segment");
             request.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
             using (HttpClient client = new HttpClient())
             {
-               HttpResponseMessage response = await client.SendAsync(request);
+               var response = await client.SendAsync(request);
 
                // Xử lý kết quả
                if (response.IsSuccessStatusCode)
                {
-                    //string responseBody = await response.Content.ReadAsStringAsync();
-                    //var result = JsonConvert.DeserializeObject<List<GetSegmentResponseDto>>(responseBody);
-                    //return null;
+                    string responseBody = response.Content.ReadAsStringAsync().Result;
+                     result = JsonConvert.DeserializeObject<List<GetSegmentResponseDto>>(responseBody)?? new();
                 }
-               else
-               {
-                   //return null;
-               }
             }
+            return result;
         }
 
         public async Task<VirtualModelResponseDto> VirtualModelAsync(VirtualModelRequestDto virtualModelRequestDto)
@@ -120,7 +106,7 @@ namespace ALPHII.Repositories
             };
 
             string jsonBody = JsonConvert.SerializeObject(virtualModelInput);
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://fbc3-34-16-147-21.ngrok-free.app/model_gen/");
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://771d-34-125-19-84.ngrok-free.app/model_gen/");
             request.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
             using (HttpClient client = new HttpClient())
