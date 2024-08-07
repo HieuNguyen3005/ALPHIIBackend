@@ -20,5 +20,7 @@ namespace ALPHII.Models.DTO
         public string LastName { get; set; }
 
         public int Credit { get; set; }
+
+        public Guid? PlanId { get; set; }
     }
 }

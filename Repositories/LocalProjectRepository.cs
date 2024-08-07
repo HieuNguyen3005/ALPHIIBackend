@@ -5,18 +5,18 @@ namespace ALPHII.Repositories
 {
     public class LocalProjectRepository : IProjectRepository
     {
-        private readonly ALPHIIBackendDbContext _dbContext;
-        public LocalProjectRepository(ALPHIIBackendDbContext dbContext)
+        private readonly ALPHIIAuthDbContext _dbContext;
+        public LocalProjectRepository(ALPHIIAuthDbContext dbContext)
         {
             this._dbContext = dbContext;
         }
 
-        public async Task<List<Project>> GetAllProjectByToolIdAndUserIdAsync(Guid ToolId, Guid UserId)
+        public async Task<List<Project>> GetAllProjectByToolIdAndUserIdAsync(Guid ToolId, string UserId)
         {
             return await _dbContext.Projects.Where(p => p.ToolId == ToolId && p.UserId == UserId).ToListAsync();
         }
 
-        public async Task<Project> GetVMProjectByToolIdAndUserIdAndProjectIdAsync(Guid ToolId, Guid UserId, Guid ProjectId)
+        public async Task<Project> GetVMProjectByToolIdAndUserIdAndProjectIdAsync(Guid ToolId, string UserId, Guid ProjectId)
         {
             var existionProject = await _dbContext.Projects.Include(x => x.VMProject).FirstOrDefaultAsync(p => p.ToolId == ToolId && p.UserId == UserId && p.Id == ProjectId);
             if (existionProject == null)
@@ -26,7 +26,7 @@ namespace ALPHII.Repositories
             return existionProject;
         }
 
-        public async Task<Project> CreateProjectAsync(Guid ToolId, Guid UserId)
+        public async Task<Project> CreateProjectAsync(Guid ToolId, string UserId)
         {
             Random random = new Random();
             string randomNumber = "";

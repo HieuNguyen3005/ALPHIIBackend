@@ -15,9 +15,13 @@ using ALPHII.Repositories;
 using ALPHII.Models.Domain;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using User.Management.Service.Models;
+
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
+//Adding Authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -29,7 +33,6 @@ builder.Services.AddAuthentication(options =>
     option.ClientId = builder.Configuration.GetSection("GoogleKeys:ClientId").Value;
     option.ClientSecret = builder.Configuration.GetSection("GoogleKeys:ClientSecret").Value;
 });
-// Add services to the container.
 
 builder.Services.AddHttpClient();
 /*Logger*/
@@ -86,8 +89,6 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-
-builder.Services.AddDbContext<ALPHIIBackendDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AiphiiBackendString")));
 builder.Services.AddDbContext<ALPHIIAuthDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AiphiiAuthString")));
 
 /* Database Context Dependency Injection */
@@ -96,13 +97,13 @@ builder.Services.AddDbContext<ALPHIIAuthDbContext>(options => options.UseSqlServ
 //var dbPassword = Environment.GetEnvironmentVariable("DB_SA_PASSWORD");
 //var connectionString = $"Data Source={dbHost};Initial Catalog={dbName};User ID=sa;Password={dbPassword}";
 
-//builder.Services.AddDbContext<ALPHIIBackendDbContext>(opt => opt.UseSqlServer(connectionString));
+//builder.Services.AddDbContext<ALPHIIAuthDbContext>(opt => opt.UseSqlServer(connectionString));
 
+
+// Add services to the container.
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
-builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
 
 
-builder.Services.AddScoped<IWalkRepository, SQLWalkRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IImageRepository, LocalImageRepository>();
 builder.Services.AddScoped<IProjectRepository, LocalProjectRepository>();
@@ -111,12 +112,13 @@ builder.Services.AddScoped<IPlanRepository, SQLPlanRepository>();
 builder.Services.AddScoped<IAIRepository, LocalAIRepository>();
 builder.Services.AddScoped<IAuthRepository, LocalAuthRepository>();
 
-
+// For Identity
 builder.Services.AddIdentityCore<ApplicationUser>()
     .AddRoles<IdentityRole>()
     .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>("Aiphii")
     .AddEntityFrameworkStores<ALPHIIAuthDbContext>()
     .AddDefaultTokenProviders();
+
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.Password.RequireDigit = false;
@@ -140,12 +142,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         IssuerSigningKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     }
-    //).AddGoogle(googleOptions =>
-    //{
-    //    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-    //    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-    //}
     );
+
+//Add Config for Required Email
+builder.Services.Configure<IdentityOptions>(opts => opts.SignIn.RequireConfirmedEmail = true);
+
+// Add Email Configs
+var emailConfig = configuration
+            .GetSection("EmailConfiguration")
+            .Get<EmailConfiguration>();
+
+builder.Services.AddSingleton(emailConfig);
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -157,8 +166,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 //app.UseMiddleware<ExceptionHandlerMiddleware>();
-//app.UseAuthentication();
-//app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Images")),

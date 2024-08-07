@@ -12,15 +12,8 @@ namespace ALPHII.Mappings
             //    .ForMember(x => x.Name, opt => opt.MapFrom(x => x.FullName))
             //    .ReverseMap();
 
-            CreateMap<Region, RegionDto>().ReverseMap();
-            CreateMap<AddRegionRequestDto, Region>().ReverseMap();
-            CreateMap<UpdateRegionRequestDto, Region>().ReverseMap();
 
-            CreateMap<Walk, WalkDto>().ReverseMap();
-            CreateMap<AddWalkRequestDto, Walk>().ReverseMap();
-            CreateMap<UpdateWalkRequestDto, Walk>().ReverseMap();
 
-            CreateMap<DifficultyDto, Difficulty>().ReverseMap();
 
             CreateMap<ProjectDto, Project>().ReverseMap();
             CreateMap<VmProjectDto, VMProject>().ReverseMap();
@@ -35,6 +28,7 @@ namespace ALPHII.Mappings
 
             CreateMap<UpdateToolRequestDto, Tool>().ReverseMap();
             CreateMap<PlanDto, Plan>().ReverseMap();
+            CreateMap<AddPlanRequestDto, Plan>().ReverseMap();
 
         }
     }

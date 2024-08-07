@@ -4,6 +4,7 @@ using ALPHII.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ALPHII.Migrations.ALPHIIAuthDb
 {
     [DbContext(typeof(ALPHIIAuthDbContext))]
-    partial class AiphiiAuthDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240806094259_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,6 +36,9 @@ namespace ALPHII.Migrations.ALPHIIAuthDb
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Credit")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -72,6 +78,9 @@ namespace ALPHII.Migrations.ALPHIIAuthDb
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<Guid?>("PlanId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -81,9 +90,6 @@ namespace ALPHII.Migrations.ALPHIIAuthDb
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<int>("credit")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -95,7 +101,158 @@ namespace ALPHII.Migrations.ALPHIIAuthDb
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("PlanId");
+
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("ALPHII.Models.Domain.Image", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("FileDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileExtension")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("FileSizeInBytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Images");
+                });
+
+            modelBuilder.Entity("ALPHII.Models.Domain.Plan", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("CostPerMonth")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CostPerYear")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CreditResetNumber")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NamePlan")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Plans");
+                });
+
+            modelBuilder.Entity("ALPHII.Models.Domain.Project", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProjectName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("ToolId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ToolId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("ALPHII.Models.Domain.Tool", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BasePlanId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ToolName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tools");
+                });
+
+            modelBuilder.Entity("ALPHII.Models.Domain.VMProject", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ImageInputId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ImageMaskId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("NegativePrompt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PositivePrompt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ResultImage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TextDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId")
+                        .IsUnique();
+
+                    b.ToTable("VMProject");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -247,6 +404,46 @@ namespace ALPHII.Migrations.ALPHIIAuthDb
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ALPHII.Models.Domain.ApplicationUser", b =>
+                {
+                    b.HasOne("ALPHII.Models.Domain.Plan", "Plan")
+                        .WithMany("Users")
+                        .HasForeignKey("PlanId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Plan");
+                });
+
+            modelBuilder.Entity("ALPHII.Models.Domain.Project", b =>
+                {
+                    b.HasOne("ALPHII.Models.Domain.Tool", "Tool")
+                        .WithMany("Projects")
+                        .HasForeignKey("ToolId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ALPHII.Models.Domain.ApplicationUser", "User")
+                        .WithMany("Projects")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Tool");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ALPHII.Models.Domain.VMProject", b =>
+                {
+                    b.HasOne("ALPHII.Models.Domain.Project", "Project")
+                        .WithOne("VMProject")
+                        .HasForeignKey("ALPHII.Models.Domain.VMProject", "ProjectId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -296,6 +493,27 @@ namespace ALPHII.Migrations.ALPHIIAuthDb
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ALPHII.Models.Domain.ApplicationUser", b =>
+                {
+                    b.Navigation("Projects");
+                });
+
+            modelBuilder.Entity("ALPHII.Models.Domain.Plan", b =>
+                {
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("ALPHII.Models.Domain.Project", b =>
+                {
+                    b.Navigation("VMProject")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ALPHII.Models.Domain.Tool", b =>
+                {
+                    b.Navigation("Projects");
                 });
 #pragma warning restore 612, 618
         }

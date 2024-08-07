@@ -8,8 +8,8 @@ namespace ALPHII.Repositories
     {
         private readonly IWebHostEnvironment webHostEnvironment;
         private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly ALPHIIBackendDbContext dbContext;
-        public LocalImageRepository(IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor, ALPHIIBackendDbContext dbContext) {
+        private readonly ALPHIIAuthDbContext dbContext;
+        public LocalImageRepository(IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor, ALPHIIAuthDbContext dbContext) {
         
             this.webHostEnvironment = webHostEnvironment;
             this.httpContextAccessor = httpContextAccessor;

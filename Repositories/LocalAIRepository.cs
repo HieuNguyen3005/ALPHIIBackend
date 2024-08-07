@@ -8,12 +8,10 @@ namespace ALPHII.Repositories
     public class LocalAIRepository : IAIRepository
     {
         private readonly IHttpClientFactory httpClientFactory;
-        private readonly ALPHIIBackendDbContext _dbContext;
         private readonly IImageRepository imageRepository;
-        public LocalAIRepository(IHttpClientFactory httpClientFactory, ALPHIIBackendDbContext dbContext,IImageRepository imageRepository )
+        public LocalAIRepository(IHttpClientFactory httpClientFactory,IImageRepository imageRepository )
         {
             this.httpClientFactory = httpClientFactory;
-            this._dbContext = dbContext;
             this.imageRepository = imageRepository;
         }
 

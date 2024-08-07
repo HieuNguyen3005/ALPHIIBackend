@@ -23,7 +23,8 @@ namespace ALPHII.Repositories
                 Email = registerRequestDto.UserName,
                 FirstName = registerRequestDto.FirstName,
                 LastName = registerRequestDto.LastName,
-                Credit = registerRequestDto.Credit
+                Credit = registerRequestDto.Credit,
+                //PlanId = registerRequestDto.PlanId
             };
 
             var identityResult = await _userManager.CreateAsync(identityUser, registerRequestDto.Password);
@@ -95,6 +96,7 @@ namespace ALPHII.Repositories
                 return null;
             }
         }
+
     }
 }
 

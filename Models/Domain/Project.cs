@@ -12,9 +12,9 @@
 
         // Foreign key and nevigation property ( 1 - n: User - Task)
 
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
 
-        public User User { get; set; }
+        public ApplicationUser User { get; set; }
 
         // Foreign key and nevigation property( 1 - n: Tool - Task)
 

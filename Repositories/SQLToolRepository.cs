@@ -7,8 +7,8 @@ namespace ALPHII.Repositories
 {
     public class SQLToolRepository : IToolRepository
     {
-        private readonly ALPHIIBackendDbContext dbContext;
-        public SQLToolRepository(ALPHIIBackendDbContext dbContext)
+        private readonly ALPHIIAuthDbContext dbContext;
+        public SQLToolRepository(ALPHIIAuthDbContext dbContext)
         {
             this.dbContext = dbContext;
         }

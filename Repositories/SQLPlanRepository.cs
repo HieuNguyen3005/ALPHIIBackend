@@ -7,8 +7,8 @@ namespace ALPHII.Repositories
 {
     public class SQLPlanRepository : IPlanRepository
     {
-        private readonly ALPHIIBackendDbContext dbContext;
-        public SQLPlanRepository(ALPHIIBackendDbContext dbContext)
+        private readonly ALPHIIAuthDbContext dbContext;
+        public SQLPlanRepository(ALPHIIAuthDbContext dbContext)
         {
             this.dbContext = dbContext;
         }

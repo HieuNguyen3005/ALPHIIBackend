@@ -9,6 +9,11 @@
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.4" />
@@ -33,6 +38,15 @@
 
   <ItemGroup>
     <Folder Include="Images\" />
+    <Folder Include="Migrations\ALPHIIAuthDb\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\User.Management.Service\User.Management.Service.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Migrations\ALPHIIAuthDb\" />
+  </ItemGroup>
 </Project>

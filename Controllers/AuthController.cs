@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using ALPHII.Models.Domain;
 using ALPHII.Models.DTO;
 using ALPHII.Repositories;
+using Azure.Core;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -18,10 +19,12 @@ namespace ALPHII.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthRepository authRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AuthController(IAuthRepository _authRepository)
+        public AuthController(IAuthRepository _authRepository, UserManager<ApplicationUser> userManager)
         {
             this.authRepository = _authRepository;
+            this._userManager = userManager;
         }
 
         //POST: /api/Auth/Register
@@ -58,9 +61,22 @@ namespace ALPHII.Controllers
             }
         }
 
-        //[HttpPost]
-        //[Route("ChangePassword")]
-        //public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequestDto loginRequestDto)
+        [HttpPost]
+        [Route("ChangePassword ")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequestDto changePasswordRequestDto)
+        {
+            // Get currently loggedin user Id
+            var currentUserId = User.Claims.ToList().FirstOrDefault(x => x.Type == "id").Value;
+
+            //Get Identity User details user user manager
+            var user = await _userManager.FindByIdAsync(currentUserId);
+
+            // Change password using user manager
+
+            await _userManager.ChangePasswordAsync(user, changePasswordRequestDto.CurrentPassword, changePasswordRequestDto.NewPassword);
+
+            return Ok();
+        }
 
 
         [HttpGet("loginGoogle")]
